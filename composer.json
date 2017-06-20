@@ -1,0 +1,29 @@
+{
+  "name": "macosxvn/phalcon-debugbar",
+  "type": "library",
+  "description": "Debug tool bar for Phalcon framework",
+  "keywords": ["framework", "phalcon", "debug", "debugbar"],
+  "homepage": "http://macosx.vn/phalcon-debugbar",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Nguyen Van Thiep",
+      "email": "thiep.nguyen@macosx.vn",
+      "homepage": "http://macosx.vn"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.5",
+    "ext-phalcon": ">=3.1",
+    "maximebf/debugbar": "^1.13"
+  },
+  "autoload": {
+    "psr-4": {
+      "Macosxvn\\Debugbar\\": "src/Macosxvn/Debugbar"
+    }
+  },
+  "scripts" : {
+    "post-install-cmd": "Macosxvn\\Debugbar\\Composer\\Script::postInstall"
+  }
+}
