@@ -8,6 +8,34 @@ Project is in progressing
 ## Installation
 #### Composer (not ready)
 #### Github
+Clone the project from github repository: [phalcon-debugbar](https://github.com/macosxvn/phalcon-debugbar.git)
+````bash
+git clone https://github.com/macosxvn/phalcon-debugbar.git path/to/debugbar
+````
+
+Edit the composer.json and add the following definition
+````json
+"repositories": [
+    {
+        "type": "path",
+        "url": "path/to/debugbar"
+    }
+],
+````
+````json
+"require": {
+    "macosxvn/phalcon-debugbar":"@dev"
+}
+````
+Run the composer to install the dependencies required
+````bash
+composer install
+````
+
+Create the symlink for the assetment
+````bash
+composer run-script post-install-cmd -d vendor/macosxvn/phalcon-debugbar
+````
 ## Quick start
 Edit file index.php, add the following code just before your application send the response to browser
 ````php
