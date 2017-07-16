@@ -42,6 +42,16 @@ use Composer\Script\Event;
  */
 class Script {
 
+    /**
+     * /!\ NOTE: If change this constant value, please change the same constant in \Macosxvn\Debugbar\Debugbar
+     */
+    const PUBLIC_URI = '/debugbar';
+
+    /**
+     * Note: run composer script in vendor/macosxvn/phalcon-debugbar
+     * @param Event $event
+     * @throws \Exception
+     */
     public static function postInstall(Event $event) {
         $composer = $event->getComposer();
         $vendorDir = $composer->getConfig()->get('vendor-dir');
@@ -50,7 +60,7 @@ class Script {
         if (file_exists($debugbarResources)) {
             $publicDir = $projectDir . "/public";
             if (file_exists($publicDir)) {
-                $publicLink = $publicDir . "/debugbar";
+                $publicLink = $publicDir . self::PUBLIC_URI;
                 @symlink($debugbarResources, $publicLink);
             } else {
                 throw new \Exception("Public folder not found");

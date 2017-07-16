@@ -30,7 +30,75 @@
 namespace Macosxvn\Debugbar;
 
 use DebugBar\DebugBar as BaseDebugBar;
+use Macosxvn\Debugbar\Events\Manager;
+use Phalcon\DiInterface;
+use Phalcon\Mvc\Application;
+use Phalcon\Events\Manager as PhalconManager;
 
 class Debugbar extends BaseDebugBar {
 
+    const SERVICE_NAME = 'debugbar';
+    const PUBLIC_URI = '/debugbar';
+
+    /**
+     * @var DiInterface
+     */
+    protected $di;
+    /**
+     * @var \Phalcon\Config
+     */
+    protected $config;
+
+    public function __construct(DiInterface $di) {
+        $this->di = $di;
+        $this->config = Config::getDefaultConfig();
+        if (isset($di->get('config')['debugbar'])) {
+            $this->config->merge($di->get('config')['debugbar']);
+        }
+
+        $this->initialize();
+    }
+
+    public function initialize() {
+        if (!$this->config->get('enabled')) {
+            return;
+        }
+
+        if (!$this->di->has('app') && !$this->di->has('application')) {
+            throw new \Exception('Application service is not set');
+        }
+
+        foreach (Config::COLLECTORS as $collectorName) {
+            /**
+             * If collector is enabled -> create & add collector
+             */
+            if (isset($this->config['collectors'][$collectorName])) {
+
+            }
+        }
+
+        /**
+         * Trigger debugbar to content
+         */
+        /* @var $application \Phalcon\Mvc\Application */
+        if ($this->di->has('app')) {
+            $application = $this->di->get('app');
+        }
+        elseif ($this->di->has('application')) {
+            $application = $this->di->get('application');
+        }
+        if ($eventManager = $application->getEventsManager()) {
+            $eventManager->attach('application', new Manager());
+        }
+        else {
+            if ($this->di->get('eventsManager')) {
+                $eventManager = $this->di->get('eventsManager');
+            }
+            else {
+                $eventManager = new PhalconManager();
+            }
+            $eventManager->attach('application', new Manager());
+            $application->setEventsManager($eventManager);
+        }
+    }
 }

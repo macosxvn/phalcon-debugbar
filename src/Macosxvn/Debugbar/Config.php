@@ -22,30 +22,34 @@
  */
 
 /**
- * @author macosxvn
- * Date: 19/06/2017
- * Time: 16:47
+ * @author Nguyen Van Thiep
+ * Date: 25/06/2017
+ * Time: 17:01
  */
 
-namespace Macosxvn\Debugbar\Events;
+namespace Macosxvn\Debugbar;
 
-use Macosxvn\Debugbar\Debugbar;
-use Phalcon\Events\Event;
-use Phalcon\Mvc\User\Plugin;
+class Config {
+    const COLLECTOR_DB = "database";
+    const COLLECTOR_VIEW = "view";
+    const COLLECTOR_SESSION = "session";
+    const COLLECTOR_REQUEST = "request";
+    const COLLECTOR_LOG = "log";
+    const COLLECTORS = [self::COLLECTOR_DB, self::COLLECTOR_VIEW, self::COLLECTOR_SESSION, self::COLLECTOR_REQUEST];
 
-class Manager extends Plugin {
-
-    public function beforeSendResponse(Event $event) {
-        /* @var $response \Phalcon\Http\Response */
-        $response = $event->getData();
-        $content = $response->getContent();
-
-        /* @var $debugbar Debugbar */
-        $debugbar = $this->getDI()->get(Debugbar::SERVICE_NAME);
-        $renderer = $debugbar->getJavascriptRenderer(Debugbar::PUBLIC_URI);
-
-        $content = str_replace("</head>", $renderer->renderHead() . "</head>", $content);
-        $content = str_replace("</body>", $renderer->render() . "</body>", $content);
-        $response->setContent($content);
+    /**
+     * @return \Phalcon\Config
+     */
+    public static function getDefaultConfig() {
+        return new \Phalcon\Config([
+            "enabled" => true,
+            // The collectors: db, view, cache, request, session
+            "collectors" => [
+                self::COLLECTOR_DB => 'db',
+                self::COLLECTOR_VIEW => 'view',
+                self::COLLECTOR_SESSION => 'session',
+                self::COLLECTOR_REQUEST => 'request'
+            ],
+        ]);
     }
 }
