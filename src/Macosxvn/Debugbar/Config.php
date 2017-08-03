@@ -30,12 +30,13 @@
 namespace Macosxvn\Debugbar;
 
 class Config {
+    const COLLECTOR_CONFIG = "phalcon_config";
     const COLLECTOR_DB = "database";
     const COLLECTOR_VIEW = "view";
     const COLLECTOR_SESSION = "session";
     const COLLECTOR_REQUEST = "request";
     const COLLECTOR_LOG = "log";
-    const COLLECTORS = [self::COLLECTOR_DB, self::COLLECTOR_VIEW, self::COLLECTOR_SESSION, self::COLLECTOR_REQUEST];
+    const COLLECTORS = [self::COLLECTOR_CONFIG, self::COLLECTOR_DB, self::COLLECTOR_VIEW, self::COLLECTOR_SESSION, self::COLLECTOR_REQUEST];
 
     /**
      * @return \Phalcon\Config

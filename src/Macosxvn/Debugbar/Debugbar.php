@@ -29,10 +29,14 @@
 
 namespace Macosxvn\Debugbar;
 
+use DebugBar\DataCollector\ConfigCollector;
+use DebugBar\DataCollector\MemoryCollector;
+use DebugBar\DataCollector\MessagesCollector;
+use DebugBar\DataCollector\RequestDataCollector;
+use DebugBar\DataCollector\TimeDataCollector;
 use DebugBar\DebugBar as BaseDebugBar;
 use Macosxvn\Debugbar\Events\Manager;
 use Phalcon\DiInterface;
-use Phalcon\Mvc\Application;
 use Phalcon\Events\Manager as PhalconManager;
 
 class Debugbar extends BaseDebugBar {
@@ -68,6 +72,14 @@ class Debugbar extends BaseDebugBar {
             throw new \Exception('Application service is not set');
         }
 
+        $this->_addDefaultCollector();
+
+        $this->getMessageCollector()->info("info message");
+
+        $this->getMessageCollector()->error("this is an error");
+
+        $this->getMessageCollector()->warning("this is a warning");
+
         foreach (Config::COLLECTORS as $collectorName) {
             /**
              * If collector is enabled -> create & add collector
@@ -100,5 +112,39 @@ class Debugbar extends BaseDebugBar {
             $eventManager->attach('application', new Manager());
             $application->setEventsManager($eventManager);
         }
+    }
+
+    /**
+     * @return \DebugBar\DataCollector\DataCollectorInterface
+     */
+    public function getTimeCollector() {
+        return $this->getCollector("time");
+    }
+
+    /**
+     * @return \DebugBar\DataCollector\DataCollectorInterface|MessagesCollector
+     */
+    public function getMessageCollector() {
+        if (!isset($this->collectors["messages"])) {
+            $this->addCollector(new MessagesCollector());
+        }
+        return $this->getCollector("messages");
+    }
+
+    protected function _addDefaultCollector() {
+        // Add config collector by default
+        /* @var $globalConfig \Phalcon\Config */
+        $globalConfig = $this->di->get('config');
+        $config = array_merge($globalConfig->toArray(), ["debugbar" => $this->config->toArray()]);
+        $this->addCollector(new ConfigCollector($config, Config::COLLECTOR_CONFIG));
+
+        // Add request collector
+        $this->addCollector(new RequestDataCollector());
+
+        $this->addCollector(new MemoryCollector());
+
+        $this->addCollector(new TimeDataCollector());
+
+        $this->addCollector(new MessagesCollector());
     }
 }
