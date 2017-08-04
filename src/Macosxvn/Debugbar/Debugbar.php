@@ -64,7 +64,7 @@ class Debugbar extends BaseDebugBar {
     }
 
     public function initialize() {
-        if (!$this->config->get('enabled')) {
+        if (!$this->config->get(Config::CONFIG_ENABLED)) {
             return;
         }
 
@@ -132,19 +132,26 @@ class Debugbar extends BaseDebugBar {
     }
 
     protected function _addDefaultCollector() {
-        // Add config collector by default
-        /* @var $globalConfig \Phalcon\Config */
-        $globalConfig = $this->di->get('config');
-        $config = array_merge($globalConfig->toArray(), ["debugbar" => $this->config->toArray()]);
-        $this->addCollector(new ConfigCollector($config, Config::COLLECTOR_CONFIG));
-
-        // Add request collector
-        $this->addCollector(new RequestDataCollector());
-
+        // Always add memory collector & time data collector
         $this->addCollector(new MemoryCollector());
-
         $this->addCollector(new TimeDataCollector());
 
-        $this->addCollector(new MessagesCollector());
+        // Add config collector by default
+        if ($this->config[Config::CONFIG_COLLECTORS][Config::COLLECTOR_CONFIG]) {
+            /* @var $globalConfig \Phalcon\Config */
+            $globalConfig = $this->di->get('config');
+            $config = array_merge($globalConfig->toArray(), ["debugbar" => $this->config->toArray()]);
+            $this->addCollector(new ConfigCollector($config, Config::COLLECTOR_CONFIG));
+        }
+
+        // Add request collector
+        if ($this->config[Config::CONFIG_COLLECTORS][Config::COLLECTOR_REQUEST]) {
+            $this->addCollector(new RequestDataCollector());
+        }
+
+        // Add messages collector
+        if ($this->config[Config::CONFIG_COLLECTORS][Config::COLLECTOR_MESSAGES]) {
+            $this->addCollector(new MessagesCollector());
+        }
     }
 }
