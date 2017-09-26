@@ -56,6 +56,9 @@ class Script {
         $composer = $event->getComposer();
         $vendorDir = $composer->getConfig()->get('vendor-dir');
         $projectDir = dirname(dirname(dirname($vendorDir)));
+        if (preg_match("/(vendor)$/", $projectDir)) {
+            $projectDir = dirname($projectDir);
+        }
         $debugbarResources = $projectDir . "/vendor/maximebf/debugbar/src/DebugBar/Resources";
         if (file_exists($debugbarResources)) {
             $publicDir = $projectDir . "/public";
