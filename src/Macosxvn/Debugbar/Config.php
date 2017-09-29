@@ -34,6 +34,12 @@ class Config {
     const CONFIG_ENABLED = "enabled";
     const CONFIG_COLLECTORS = "collectors";
 
+    //Define javascript & css vendor
+    const CONFIG_VENDOR = "vendor";
+    const VENDOR_JQUERY = "jquery";
+    const VENDOR_FONTAWESOME = "fontawesome";
+    const VENDOR_HIGHLIGHTJS = "highlightjs";
+
     // constants of collector name
     const COLLECTOR_CONFIG = "phalcon_config";
     const COLLECTOR_DB = "database";

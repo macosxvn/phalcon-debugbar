@@ -72,6 +72,17 @@ class Debugbar extends BaseDebugBar {
             throw new \Exception('Application service is not set');
         }
 
+        // Init javascript renderer
+        $renderer = $this->getJavascriptRenderer(Debugbar::PUBLIC_URI);
+
+        if (isset($this->config[Config::CONFIG_VENDOR])) {
+            foreach ($this->config[Config::CONFIG_VENDOR] as $vendorName => $value) {
+                if (!$value) {
+                    $renderer->disableVendor($vendorName);
+                }
+            }
+        }
+
         $this->_addDefaultCollector();
 
         $this->getMessageCollector()->info("info message");
